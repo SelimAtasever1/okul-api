@@ -1,0 +1,193 @@
+openapi: 3.0.0
+info:
+  title: 'Cart API'
+  version: '0.1'
+paths:
+  /cart/store-logged-user-cart:
+    post:
+      summary: 'Stores cart items for a logged user'
+      operationId: 788a2d384f5cb348123038f3c703b01f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                user_id:
+                  type: integer
+                items:
+                  type: array
+                  items: { properties: { product_id: { type: integer }, quantity: { type: integer } }, type: object }
+              type: object
+      responses:
+        '200':
+          description: 'Successful operation'
+        '422':
+          description: 'Validation error'
+  /cart/store-guest-cart:
+    post:
+      summary: 'Stores cart items for a guest user'
+      operationId: 3fb4961e808eeed93a47801725129cd6
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  example: John
+                lastname:
+                  type: string
+                  example: Doe
+                phone:
+                  type: string
+                  example: '5050550550'
+                email:
+                  type: string
+                  format: email
+                  example: email@example.com
+                product_id:
+                  type: integer
+                  example: 1
+                quantity:
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        '200':
+          description: 'Successful operation'
+        '422':
+          description: 'Validation error'
+  /cart/update:
+    patch:
+      summary: 'Updates cart items'
+      operationId: 28fb8ade6c3bb6993d60129653fcb79d
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                -
+                  properties: { id: { type: integer, example: 7 }, quantity: { type: integer, example: 30 } }
+                  type: object
+                -
+                  properties: { items: { type: array, items: { properties: { id: { type: integer, example: 7 }, quantity: { type: integer, example: 30 } }, type: object }, example: [{ id: 5, quantity: 20 }, { id: 6, quantity: 15 }] } }
+                  type: object
+      responses:
+        '200':
+          description: 'Items updated successfully'
+        '422':
+          description: 'Validation error'
+  /cart/delete:
+    delete:
+      summary: 'Deletes items from the cart'
+      operationId: d9e36a6e50073b44a00dcef7e5501586
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                -
+                  properties: { id: { type: integer, example: 5 } }
+                  type: object
+                -
+                  properties: { ids: { type: array, items: { type: integer }, example: [5, 6, 7] } }
+                  type: object
+      responses:
+        '200':
+          description: 'Items removed from cart successfully'
+        '422':
+          description: 'Validation error'
+  /preorders:
+    get:
+      summary: 'Get all preorders'
+      operationId: 2c97bafc40043a2ac640b7bde57ca244
+      responses:
+        '200':
+          description: 'List of all preorders'
+        '403':
+          description: Unauthorized
+      security:
+        -
+          basicAuth: []
+    post:
+      summary: 'Create a new preorder'
+      operationId: 99ca499ff67e7a14f3def137606ed755
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  example: John
+                lastname:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  example: johndoe@example.com
+                  nullable: true
+                phone:
+                  type: string
+                  example: '5950555151'
+                product_id:
+                  type: integer
+                  example: 1
+                quantity:
+                  type: integer
+                  example: 5
+              type: object
+      responses:
+        '200':
+          description: 'User and product created successfully'
+        '422':
+          description: 'Validation error'
+  '/preorders/{id}':
+    get:
+      summary: 'Get a specific preorder by ID'
+      operationId: 0298139a5dacaec990fac340c2eec07c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the preorder to retrieve'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Details of the specific preorder'
+        '404':
+          description: 'Preorder not found'
+        '403':
+          description: Unauthorized
+      security:
+        -
+          basicAuth: []
+  '/preorders/{id}/approve':
+    put:
+      summary: 'Approve a specific preorder by ID'
+      operationId: 4c6feb814ed5a3db65ddd70c9c48335d
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the preorder to approve'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Preorder approved successfully'
+        '404':
+          description: 'Preorder not found'
+        '403':
+          description: Unauthorized
+      security:
+        -
+          basicAuth: []
